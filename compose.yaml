@@ -1,0 +1,29 @@
+name: fitness-club-api
+
+services:
+  api:
+    build: .
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER:-fitness}@db:5432/${POSTGRES_DB:-fitness_club}"
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:-fitness}"
+      POSTGRES_DB: "${POSTGRES_DB:-fitness_club}"
+      POSTGRES_HOST_AUTH_METHOD: trust
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

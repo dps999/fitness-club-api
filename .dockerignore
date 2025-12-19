@@ -1,0 +1,10 @@
+*
+!Dockerfile
+!pyproject.toml
+!alembic.ini
+!alembic/
+!alembic/**
+!app/
+!app/**
+**/__pycache__
+**/*.pyc
